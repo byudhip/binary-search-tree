@@ -159,6 +159,89 @@ class Tree {
     return inOrderArr;
   }
 
+  preOrder(callback) {
+    const preOrderArr = [];
+    if (typeof callback !== "function") {
+      throw new Error("Please provide a valid callback function");
+    }
+    function traverse(node) {
+      if (!node) return;
+      callback(node.data);
+      preOrderArr.push(node.data);
+      traverse(node.left);
+      traverse(node.right);
+    }
+
+    traverse(this.root);
+    return preOrderArr;
+  }
+
+  postOrder(callback) {
+    const postOrderArr = [];
+    if (typeof callback !== "function") {
+      throw new Error("Please provide a valid callback function");
+    }
+    function traverse(node) {
+      if (!node) return;
+      traverse(node.left);
+      traverse(node.right);
+      callback(node.data);
+      postOrderArr.push(node.data);
+    }
+
+    traverse(this.root);
+    return postOrderArr;
+  }
+
+  height(value) {
+    let targetNode = this.find(value);
+    if (!targetNode) return null;
+
+    function calcHeight(node) {
+      if (!node) return -1;
+      return 1 + Math.max(calcHeight(node.left), calcHeight(node.right));
+    }
+
+    return calcHeight(targetNode);
+  }
+
+  depth(value) {
+    function findDepth(node, value, currentDepth) {
+      if (!node) return null;
+      if (node.data === value) return currentDepth;
+
+      if (value < node.data) {
+        return findDepth(node.left, value, currentDepth + 1);
+      } else {
+        return findDepth(node.right, value, currentDepth + 1);
+      }
+    }
+    return findDepth(this.root, value, 0);
+  }
+
+  checkForBalance(node) {
+    if (node === null) return 0;
+    const left = this.checkForBalance(node.left);
+    if (left === -1) return -1;
+
+    const right = this.checkForBalance(node.right);
+    if (right === -1) return -1;
+
+    if (Math.abs(left - right) > 1) return -1;
+
+    return 1 + Math.max(left, right);
+  }
+
+  isBalanced() {
+    return this.checkForBalance(this.root) !== -1;
+  }
+
+  rebalance() {
+    let sortedArray = this.inOrder(() => {});
+    this.root = this.buildTree(sortedArray);
+    return "tree rebalanced";
+  }
+
   traverseAndPrint(node) {
     console.log(node);
   }
