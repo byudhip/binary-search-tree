@@ -41,7 +41,6 @@ class Tree {
 
     return node;
   }
-
   insert(value) {
     const [newRoot, inserted] = this._insertRecursively(this.root, value);
     this.root = newRoot;
@@ -66,7 +65,85 @@ class Tree {
     }
   }
 
-  deleteItem(value) {}
+  deleteItem(value) {
+    const [newRoot, deleted] = this._deleteRecursively(this.root, value);
+    this.root = newRoot;
+    return deleted;
+  }
+
+  _deleteRecursively(node, value) {
+    if (node === null) return [null, false];
+
+    if (value < node.data) {
+      const [newLeft, deleted] = this._deleteRecursively(node.left, value);
+      node.left = newLeft;
+      return [node, deleted];
+    } else if (value > node.data) {
+      const [newRight, deleted] = this._deleteRecursively(node.right, value);
+      node.right = newRight;
+      return [node, deleted];
+    } else {
+      if (!node.left && !node.right) {
+        return [null, true]; // no children
+      } else if (!node.left) {
+        return [node.right, true]; // only right child
+      } else if (!node.right) {
+        return [node.left, true]; // only left child
+      } else {
+        // two children, find in-order successor
+        let successor = node.right;
+        while (successor.left !== null) {
+          successor = successor.left;
+        }
+        node.data = successor.data;
+        const [newRight, _] = this._deleteRecursively(
+          node.right,
+          successor.data
+        );
+        node.right = newRight;
+        return [node, true];
+      }
+    }
+  }
+
+  find(value) {
+    return this._findRecursively(this.root, value);
+  }
+  _findRecursively(node, value) {
+    if (node === null) return null;
+    if (node.data === value) return node;
+
+    if (value < node.data) {
+      return this._findRecursively(node.left, value);
+    } else {
+      return this._findRecursively(node.right, value);
+    }
+  }
+
+  levelOrder(callback) {
+    const root = this.root;
+    if (typeof callback !== "function") {
+      throw new Error("Please provide a valid callback function");
+    }
+    if (!root) return;
+    let q = [];
+    let nodeData = [];
+    q.push(root);
+
+    while (q.length > 0) {
+      const current = q.shift();
+      nodeData.push(current.data);
+      callback(nodeData);
+
+      if (current.left) q.push(current.left);
+      if (current.right) q.push(current.right);
+    }
+    return nodeData;
+  }
+
+  traverseAndPrint(array) {
+    console.log(array);
+  }
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
