@@ -1,13 +1,27 @@
 import { Tree, prettyPrint } from "./bst.js";
 
-const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+const randomArr = (length) => {
+  let arr = new Array(length);
+  for (let i = 0; i < length; i++) {
+    arr[i] = Math.floor(Math.random() * length);
+  }
+  return arr;
+};
 
-prettyPrint(tree.root);
-tree.insert(12);
-tree.insert(122);
-tree.insert(782);
-tree.insert(13000);
-tree.insert(5);
-prettyPrint(tree.root);
-// tree.levelOrder(tree.traverseAndPrint);
+const tree = new Tree(randomArr(100));
+
+console.log(tree.levelOrder(() => {}));
+console.log(tree.preOrder(() => {}));
+console.log(tree.postOrder(() => {}));
 console.log(tree.inOrder(() => {}));
+tree.insert(3750);
+tree.insert(4500);
+tree.insert(13000);
+console.log(tree.isBalanced());
+tree.rebalance();
+console.log(tree.isBalanced());
+console.log(tree.levelOrder(() => {}));
+console.log(tree.preOrder(() => {}));
+console.log(tree.postOrder(() => {}));
+console.log(tree.inOrder(() => {}));
+prettyPrint(tree.root);
