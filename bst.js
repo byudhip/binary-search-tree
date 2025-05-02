@@ -31,6 +31,7 @@ class Tree {
         [...new Set(this.array)].sort((a, b) => a - b)
       ));
   }
+
   buildTree(sortedArray) {
     if (sortedArray.length === 0) return null;
     const midIndex = Math.floor(sortedArray.length / 2);
@@ -127,22 +128,39 @@ class Tree {
     }
     if (!root) return;
     let q = [];
-    let nodeData = [];
+    let levelOrderArr = [];
     q.push(root);
 
     while (q.length > 0) {
       const current = q.shift();
-      nodeData.push(current.data);
-      callback(nodeData);
+      levelOrderArr.push(current.data);
+      callback(current.data);
 
       if (current.left) q.push(current.left);
       if (current.right) q.push(current.right);
     }
-    return nodeData;
+    return levelOrderArr;
   }
 
-  traverseAndPrint(array) {
-    console.log(array);
+  inOrder(callback) {
+    const inOrderArr = [];
+    if (typeof callback !== "function") {
+      throw new Error("Please provide a valid callback function");
+    }
+    function traverse(node) {
+      if (!node) return;
+      traverse(node.left);
+      callback(node.data);
+      inOrderArr.push(node.data);
+      traverse(node.right);
+    }
+
+    traverse(this.root);
+    return inOrderArr;
+  }
+
+  traverseAndPrint(node) {
+    console.log(node);
   }
 }
 
