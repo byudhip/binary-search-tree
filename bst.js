@@ -239,7 +239,7 @@ class Tree {
   rebalance() {
     let sortedArray = this.inOrder(() => {});
     this.root = this.buildTree(sortedArray);
-    return "tree rebalanced";
+    console.log("tree rebalanced");
   }
 
   traverseAndPrint(node) {
